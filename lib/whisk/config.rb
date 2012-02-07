@@ -17,6 +17,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+# from_file is derived from chef/chef/lib/chef/mixin/from_file.rb
 
 require 'whisk/bowl'
 
@@ -44,7 +45,6 @@ class Whisk
       end
     end
 
-    # totally jacked from 
     def self.from_file(filename)
       if ::File.exists?(filename) && ::File.readable?(filename)
         self.instance_eval(::IO.read(filename), filename, 1)
