@@ -33,7 +33,7 @@ class Whisk
       end
 
       def checkout(ref="master")
-          Whisk::Log.info "checking out ref #{ref} for ingredient #{self.name}"
+          Whisk::Log.info "checking out ref '#{ref}' for ingredient #{self.name}"
           shell_out("git checkout #{ref}")
       end
 
@@ -43,7 +43,7 @@ class Whisk
       end
 
       def fetch
-          Whisk::Log.info "fetching ingredient #{self.name}, from git url #{self.source}"
+          Whisk::Log.info "fetching ingredient '#{self.name}', from git url #{self.source}"
           shell_out("git fetch --all")
       end
 

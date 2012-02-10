@@ -24,7 +24,12 @@ require 'logger'
 require 'whisk/config'
 require 'whisk/log'
 
-Whisk::Log.logger = Logger.new(STDOUT)
+# borrowed from chef/chef/lib/chef/application.rb
+logger = Logger.new(STDOUT)
+STDOUT.sync = true
+logger.formatter = Whisk::Log.logger.formatter
+Whisk::Log::Formatter.show_time = false
+Whisk::Log.loggers << logger
 
 whiskfile = File.join(ENV['HOME'], '.chef', 'whisk.rb')
 

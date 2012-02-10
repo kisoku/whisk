@@ -42,7 +42,7 @@ class Whisk
 
     def ingredient(iname, opts = {})
       if ingredients.has_key? iname
-        raise ArgumentError "ingredient #{iname} has already added to bowl #{name}"
+        raise ArgumentError "ingredient '#{iname}' has already added to bowl '#{name}'"
       else
         source = opts.delete :source
         flavour = opts.delete :flavour
@@ -55,7 +55,7 @@ class Whisk
     def create
       unless File.exists? path
         begin
-          Whisk::Log.info "Creating bowl #{name} with path #{path}"
+          Whisk::Log.info "creating bowl '#{name}' with path #{path}"
           ::FileUtils.mkdir_p path
         rescue Exception => e
           puts "#{e.backtrace} #{e.message}"
@@ -66,6 +66,8 @@ class Whisk
     def prepare
       self.create unless File.exists? path
       ::Dir.chdir path
+
+      Whisk::Log.info "preparing bowl '#{name}' with path #{path}"
 
       ingredients.keys.each do |i|
         begin
