@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.bindir = "bin"
   s.executables  = %w( whisk )
   s.add_dependency "mixlib-log", ">= 1.3.0"
-  s.add_dependency "mixlib-shellout", ">= 1.0.1.rc.1"
+  s.add_dependency "mixlib-shellout", ">= 1.0.0.rc.1"
   s.add_development_dependency "rspec"
 end
 
