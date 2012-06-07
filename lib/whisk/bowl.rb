@@ -22,11 +22,11 @@ require 'whisk/ingredient'
 
 class Whisk
   class Bowl
-    attr_accessor :name, :path, :ingredients
+    attr_accessor :name, :ingredients
 
     def initialize(name, path=nil, &block)
       @name = name
-      @path = path
+      @path = File.join(Dir.getwd, name)
       @ingredients = {}
 
       instance_eval(&block) if block_given?
@@ -52,8 +52,8 @@ class Whisk
       end
     end
 
-    def create
-      unless File.exists? path
+    def create!
+      if not path.nil? and Dir.exists? path
         begin
           Whisk::Log.info "creating bowl '#{name}' with path #{path}"
           ::FileUtils.mkdir_p path
@@ -64,16 +64,16 @@ class Whisk
     end
 
     def prepare
-      self.create unless File.exists? path
+      self.create!
       ::Dir.chdir path
 
       Whisk::Log.info "preparing bowl '#{name}' with path #{path}"
 
-      ingredients.keys.each do |i|
+      ingredients.each do |name, ingredient|
         begin
-          ingredients[i].prepare
+          ingredient.prepare
         rescue Exception => e
-          Whisk::Log.error "failed fetching ingredient #{i}! bailing"
+          Whisk::Log.error "failed fetching ingredient #{name}! bailing"
           raise
           exit 1
         end

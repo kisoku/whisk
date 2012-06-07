@@ -31,7 +31,13 @@ logger.formatter = Whisk::Log.logger.formatter
 Whisk::Log::Formatter.show_time = false
 Whisk::Log.loggers << logger
 
-whiskfile = File.join(ENV['HOME'], '.chef', 'whisk.rb')
+if File.exists?("Whiskfile")
+  whiskfile = "Whiskfile"
+else
+  whiskfile = File.join(ENV['HOME'], '.chef', 'whisk.rb')
+end
+
+Whisk::Log.info "Loading configuration from Whiskfile: #{whiskfile}"
 
 Whisk::Config.from_file(whiskfile)
 
