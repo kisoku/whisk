@@ -69,11 +69,11 @@ class Whisk
 
       Whisk::Log.info "preparing bowl '#{name}' with path #{path}"
 
-      ingredients.keys.each do |i|
+      ingredients.each do |name, ingredient|
         begin
-          ingredients[i].prepare
+          ingredient.prepare
         rescue Exception => e
-          Whisk::Log.error "failed fetching ingredient #{i}! bailing"
+          Whisk::Log.error "failed fetching ingredient #{name}! bailing"
           raise
           exit 1
         end
