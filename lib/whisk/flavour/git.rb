@@ -34,7 +34,7 @@ class Whisk
 
       def checkout(ref="master")
           Whisk::Log.info "checking out ref '#{ref}' for ingredient #{self.name}"
-          shell_out("git checkout #{ref}")
+          shell_out("git checkout #{ref}", :cwd => self.name)
       end
 
       def post_fetch
