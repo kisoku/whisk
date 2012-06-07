@@ -11,6 +11,11 @@ task :build do
   system "gem build #{GEM_NAME}.gemspec"
 end
 
+desc "Install #{GEM_NAME} gem"
+task :install do
+  system "gem install #{GEM_NAME}-#{GEM_VERSION}.gem"
+end
+
 desc "Push #{GEM_NAME} to rubygems.org"
 task :push => :build do
   system "gem push #{GEM_NAME}-#{GEM_VERSION}.gem"
