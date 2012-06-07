@@ -52,8 +52,8 @@ class Whisk
       end
     end
 
-    def create
-      unless File.exists? path
+    def create!
+      if not path.nil? and Dir.exists? path
         begin
           Whisk::Log.info "creating bowl '#{name}' with path #{path}"
           ::FileUtils.mkdir_p path
@@ -64,7 +64,7 @@ class Whisk
     end
 
     def prepare
-      self.create unless File.exists? path
+      self.create!
       ::Dir.chdir path
 
       Whisk::Log.info "preparing bowl '#{name}' with path #{path}"
