@@ -22,7 +22,7 @@ require 'whisk/ingredient'
 
 class Whisk
   class Bowl
-    attr_accessor :name, :path, :ingredients
+    attr_accessor :name, :ingredients
 
     def initialize(name, path=nil, &block)
       @name = name
