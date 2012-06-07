@@ -26,7 +26,7 @@ class Whisk
 
     def initialize(name, path=nil, &block)
       @name = name
-      @path = path
+      @path = File.join(Dir.getwd, name)
       @ingredients = {}
 
       instance_eval(&block) if block_given?
