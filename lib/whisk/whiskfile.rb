@@ -1,4 +1,5 @@
 #
+#
 # Author:: Adam Jacob (<adam@opscode.com>)
 # Author:: Mathieu Sauve-Frankel <msf@kisoku.net>
 # Copyright:: Copyright (c) 2008 Opscode, Inc.
@@ -18,38 +19,38 @@
 # limitations under the License.
 #
 # from_file is derived from chef/chef/lib/chef/mixin/from_file.rb
-
-require 'whisk/bowl'
+#
 
 class Whisk
-  class Config
-    attr_accessor :bowls
-
+  class WhiskFile
     @@bowls = {}
 
-    def self.add_bowl(bowl)
-      @@bowls[bowl.name] = bowl
-    end
+    class << self
+      def add_bowl(bowl)
+        if @@bowls.has_key? name
+          raise ArgumentError "bowl #{name} already exists"
+        else
+          @@bowls[bowl.name] = bowl
+        end
+      end
 
-    def self.bowls
-      @@bowls
-    end
-
-    def self.bowl(name, &block)
-      if self.bowls.has_key? name
-        raise ArgumentError "bowl #{name} already exists"
-      else
+      def bowl(name, &block)
         b = Whisk::Bowl.new(name)
         b.instance_eval(&block)
-        self.add_bowl(b)
+        add_bowl(b)
       end
-    end
 
-    def self.from_file(filename)
-      if ::File.exists?(filename) && ::File.readable?(filename)
-        self.instance_eval(::IO.read(filename), filename, 1)
-      else
-        raise IOError, "Cannot open or read #{filename}!"
+      def bowls
+        @@bowls
+      end
+
+      def from_file(filename)
+        if ::File.exists?(filename) && ::File.readable?(filename)
+          instance_eval(::IO.read(filename), filename, 1)
+          self
+        else
+          raise IOError, "Cannot open or read #{filename}!"
+        end
       end
     end
   end
