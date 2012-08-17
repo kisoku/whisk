@@ -39,15 +39,11 @@ class Whisk
       end
     end
 
-    def ingredient(iname, opts = {})
+    def ingredient(iname, &block)
       if ingredients.has_key? iname
         raise ArgumentError "Ingredient '#{iname}' has already added to bowl '#{name}'"
       else
-        source = opts.delete :source
-        flavour = opts.delete :flavour
-        options = opts.delete :options
-        i = Whisk::Ingredient.new(iname, source, flavour, options)
-        ingredients[iname] = i
+        ingredients[iname] = Whisk::Ingredient.new(iname, &block)
       end
     end
 

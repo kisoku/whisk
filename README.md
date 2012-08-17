@@ -20,10 +20,10 @@ whisk.rb file.
     bowl "production" do
       path cb_path % name
 
-      ingredient "ntp",
-        :source => github % "ntp",
-	:options => { :ref => 'master' }
-
+      ingredient "ntp" do
+        source github % "ntp"
+        options { :ref => 'master' }
+      end
     end 
 
 

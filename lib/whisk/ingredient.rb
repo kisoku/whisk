@@ -15,24 +15,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'chef/mixin/params_validate'
 require 'whisk/flavours'
 
 class Whisk
   class Ingredient
 
-    attr_accessor :name, :source, :flavour, :options
+    include Chef::Mixin::ParamsValidate
 
-    def initialize(name, source=nil, flavour='git', options={})
+    attr_reader :name
+
+    def initialize(name, &block)
       @name = name
-      @source = source
-      @flavour = flavour || 'git'
-      @options = options
+      @flavour = 'git'
+      @source = nil
+      @options = {}
 
-      if source.nil?
-        raise ArgumentError, "must provide source for Ingredient #{name}"
-      end
+      instance_eval(&block) if block_given?
 
       self.class.send(:include, Whisk::FLAVOURS[@flavour])
+    end
+
+    def source(arg=nil)
+      set_or_return(:source, arg, :required => true)
+    end
+
+    def flavour(arg=nil)
+      set_or_return(:flavour, arg, :default => 'git')
+    end
+
+    def options(arg=nil)
+      set_or_return(:options, arg, :default => {})
     end
   end
 end

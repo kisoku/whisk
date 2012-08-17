@@ -21,11 +21,19 @@ github = "git://github.com/cookbooks/%s.git"
 
 bowl "testing" do
   path File.join(whisk_dir, "testing")
-  ingredient 'ssh', :source => github % 'ssh'
-  ingredient 'ntp', :source => github % 'ntp'
+  ingredient 'ssh' do
+    source github % 'ssh'
+  end
+
+  ingredient 'ntp' do
+    source github % 'ntp'
+  end
 end
 
 bowl "production" do
   path File.join(whisk_dir, "production")
-  ingredient 'ssh', :source => github % 'ssh', :options => { :ref => '0.1.0' }
+  ingredient 'ssh' do
+    source github % 'ssh'
+    options { :ref => '0.1.0' }
+  end
 end
