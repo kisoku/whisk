@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.files = %w(LICENSE README.md) + Dir.glob("lib/**/*")
   s.bindir = "bin"
   s.executables  = %w( whisk )
-  s.add_dependency "chef",
+  s.add_dependency "chef"
   s.add_dependency "mixlib-log", ">= 1.3.0"
   s.add_dependency "mixlib-shellout", ">= 1.0.0"
   s.add_dependency "thor"
