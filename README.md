@@ -64,6 +64,12 @@ Whisk status calls 'git status' on the specified set of ingredients.
 You can use the same filter mechanisms as described in 'whisk prepare'
 to run update on a subset of ingredients
 
+    # show status for all configured bowls
+    $ whisk status
+    Status for ingredient 'production/ntp'
+    # On branch master
+    nothing to commit (working directory clean)
+
 ## whisk update ##
 
 Whisk update calls 'git remote update' on the specified set of ingredients
