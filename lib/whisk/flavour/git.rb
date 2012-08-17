@@ -25,7 +25,9 @@ class Whisk
       include Whisk::Mixin::ShellOut
 
       def clone
-        unless ::File.exists? File.join(Dir.pwd, name, ".git", "config")
+        if ::File.exists? File.join(Dir.pwd, name, ".git", "config")
+          Whisk.ui.info "Ingredient #{self.name} already prepared, moving on"
+        else
           Whisk.ui.info "Cloning ingredient #{self.name}, " + "from git url #{self.source}"
           shell_out("git clone #{self.source} #{self.name}")
         end
@@ -49,7 +51,6 @@ class Whisk
       def prepare
         begin
           self.clone
-          self.fetch
           if self.options and self.options.has_key? :ref
             self.checkout self.options[:ref]
           else
