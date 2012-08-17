@@ -38,16 +38,6 @@ class Whisk
           shell_out("git checkout #{ref}", :cwd => self.name)
       end
 
-      def post_fetch
-      end
-      def pre_fetch
-      end
-
-      def fetch
-          Whisk.ui.info "Fetching ingredient '#{self.name}', from git url #{self.source}"
-          shell_out("git fetch --all")
-      end
-
       def prepare
         begin
           self.clone
