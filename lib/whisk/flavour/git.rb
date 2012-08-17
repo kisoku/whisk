@@ -61,6 +61,10 @@ class Whisk
           raise
         end
       end
+
+      def status
+          shell_out("git status", :cwd => self.name)
+      end
     end
   end
 end
