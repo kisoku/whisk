@@ -20,6 +20,19 @@ require 'thor'
 require 'whisk'
 require 'whisk/whiskfile'
 
+def filter_bowls(bowls, bowl=nil, ingredient=nil)
+  if bowl
+    bowls.delete_if {|k,v| !k.to_s.match(/^#{bowl}$/)}
+    if ingredient
+      bowls.each do |name, b|
+        bowls[name].ingredients.delete_if {|k,v| !k.to_s.match(/^#{ingredient}$/)}
+      end
+    end
+  end
+
+  return bowls
+end
+
 class Whisk
   class CLI < Thor
     def initialize(*)
@@ -33,7 +46,7 @@ class Whisk
     end
 
     namespace "whisk"
-    
+
     method_option :whiskfile,
       type: :string,
       default: File.join(Dir.pwd, Whisk::DEFAULT_FILENAME),
@@ -41,9 +54,11 @@ class Whisk
       aliases: "-w",
       banner: "PATH"
     desc "prepare", "prepare a bowl by cloning any missing repositories"
-    def prepare
+    def prepare(bowl=nil, ingredient=nil)
       whiskfile = ::Whisk::WhiskFile.from_file(options[:whiskfile])
-      whiskfile.bowls.each do |name, bowl|
+      bowls = filter_bowls(whiskfile.bowls, bowl, ingredient)
+
+      bowls.each do |name, bowl|
         bowl.prepare
       end
     end
