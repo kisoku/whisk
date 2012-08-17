@@ -17,7 +17,6 @@
 
 require 'pp'
 require 'fileutils'
-require 'whisk/log'
 require 'whisk/ingredient'
 
 class Whisk
@@ -40,22 +39,18 @@ class Whisk
       end
     end
 
-    def ingredient(iname, opts = {})
+    def ingredient(iname, &block)
       if ingredients.has_key? iname
-        raise ArgumentError "ingredient '#{iname}' has already added to bowl '#{name}'"
+        raise ArgumentError "Ingredient '#{iname}' has already added to bowl '#{name}'"
       else
-        source = opts.delete :source
-        flavour = opts.delete :flavour
-        options = opts.delete :options
-        i = Whisk::Ingredient.new(iname, source, flavour, options)
-        ingredients[iname] = i
+        ingredients[iname] = Whisk::Ingredient.new(iname, &block)
       end
     end
 
     def create!
-      if not path.nil? and Dir.exists? path
+      unless Dir.exists? path
         begin
-          Whisk::Log.info "creating bowl '#{name}' with path #{path}"
+          Whisk.ui.info "Creating bowl '#{name}' with path #{path}"
           ::FileUtils.mkdir_p path
         rescue Exception => e
           puts "#{e.backtrace} #{e.message}"
@@ -67,16 +62,32 @@ class Whisk
       self.create!
       ::Dir.chdir path
 
-      Whisk::Log.info "preparing bowl '#{name}' with path #{path}"
+      Whisk.ui.info "Preparing bowl '#{name}' with path #{path}"
 
       ingredients.each do |name, ingredient|
         begin
           ingredient.prepare
         rescue Exception => e
-          Whisk::Log.error "failed fetching ingredient #{name}! bailing"
+          Whisk.ui.error "Failed fetching ingredient '#{name}'"
           raise
           exit 1
         end
+      end
+    end
+
+    def status
+      ::Dir.chdir path
+      ingredients.each do |name, ingredient|
+        Whisk.ui.info "Status for ingredient '#{self.name}/#{name}'"
+        ingredient.status
+      end
+    end
+
+    def update
+      ::Dir.chdir path
+      ingredients.each do |name, ingredient|
+        Whisk.ui.info "Updating ingredient '#{self.name}/#{name}'"
+        ingredient.update
       end
     end
   end

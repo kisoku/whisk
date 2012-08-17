@@ -16,7 +16,6 @@
 # limitations under the License.
 
 require 'whisk/mixin/shellout'
-require 'whisk/log'
 require 'whisk/ingredient'
 
 class Whisk
@@ -26,40 +25,37 @@ class Whisk
       include Whisk::Mixin::ShellOut
 
       def clone
-        unless ::File.exists? File.join(Dir.pwd, name, ".git", "config")
-          Whisk::Log.info "cloning ingredient #{self.name}, " + "from git url #{self.source}"
+        if ::File.exists? File.join(Dir.pwd, name, ".git", "config")
+          Whisk.ui.info "Ingredient #{self.name} already prepared, moving on"
+        else
+          Whisk.ui.info "Cloning ingredient #{self.name}, " + "from git url #{self.source}"
           shell_out("git clone #{self.source} #{self.name}")
         end
       end
 
       def checkout(ref="master")
-          Whisk::Log.info "checking out ref '#{ref}' for ingredient #{self.name}"
+        if self.options and self.options.has_key? :ref
+          Whisk.ui.info "Checking out ref '#{ref}' for ingredient #{self.name}"
           shell_out("git checkout #{ref}", :cwd => self.name)
-      end
-
-      def post_fetch
-      end
-      def pre_fetch
-      end
-
-      def fetch
-          Whisk::Log.info "fetching ingredient '#{self.name}', from git url #{self.source}"
-          shell_out("git fetch --all")
+        end
       end
 
       def prepare
         begin
           self.clone
-          self.fetch
-          if self.options and self.options.has_key? :ref
-            self.checkout self.options[:ref]
-          else
-            self.checkout
-          end
+          self.checkout
         rescue Exception => e
-          Whisk::Log.error "#{e.message} #{e.backtrace}"
+          Whisk.ui.error "#{e.message} #{e.backtrace}"
           raise
         end
+      end
+
+      def status
+          shell_out("git status", :cwd => self.name)
+      end
+
+      def update
+          shell_out("git remote update", :cwd => self.name)
       end
     end
   end
