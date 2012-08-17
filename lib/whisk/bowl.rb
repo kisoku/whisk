@@ -41,7 +41,7 @@ class Whisk
 
     def ingredient(iname, opts = {})
       if ingredients.has_key? iname
-        raise ArgumentError "ingredient '#{iname}' has already added to bowl '#{name}'"
+        raise ArgumentError "Ingredient '#{iname}' has already added to bowl '#{name}'"
       else
         source = opts.delete :source
         flavour = opts.delete :flavour
@@ -54,7 +54,7 @@ class Whisk
     def create!
       unless path.nil? and Dir.exists? path
         begin
-          Whisk.ui.info "creating bowl '#{name}' with path #{path}"
+          Whisk.ui.info "Creating bowl '#{name}' with path #{path}"
           ::FileUtils.mkdir_p path
         rescue Exception => e
           puts "#{e.backtrace} #{e.message}"
@@ -66,13 +66,13 @@ class Whisk
       self.create!
       ::Dir.chdir path
 
-      Whisk.ui.info "preparing bowl '#{name}' with path #{path}"
+      Whisk.ui.info "Preparing bowl '#{name}' with path #{path}"
 
       ingredients.each do |name, ingredient|
         begin
           ingredient.prepare
         rescue Exception => e
-          Whisk.ui.error "failed fetching ingredient #{name}! bailing"
+          Whisk.ui.error "Failed fetching ingredient #{name}! bailing"
           raise
           exit 1
         end
