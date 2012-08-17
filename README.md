@@ -31,6 +31,8 @@ Whiskfile.
       end
     end
 
+# Commands #
+
 ##  whisk prepare ##
 
 The prepare subcommand allows you to clone your ingredients and optional
