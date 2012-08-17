@@ -72,7 +72,7 @@ class Whisk
         begin
           ingredient.prepare
         rescue Exception => e
-          Whisk.ui.error "Failed fetching ingredient #{name}! bailing"
+          Whisk.ui.error "Failed fetching ingredient '#{name}'"
           raise
           exit 1
         end
