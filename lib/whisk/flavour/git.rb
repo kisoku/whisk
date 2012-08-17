@@ -27,13 +27,13 @@ class Whisk
 
       def clone
         unless ::File.exists? File.join(Dir.pwd, name, ".git", "config")
-          Whisk::Log.info "cloning ingredient #{self.name}, " + "from git url #{self.source}"
+          Whisk.ui.info "cloning ingredient #{self.name}, " + "from git url #{self.source}"
           shell_out("git clone #{self.source} #{self.name}")
         end
       end
 
       def checkout(ref="master")
-          Whisk::Log.info "checking out ref '#{ref}' for ingredient #{self.name}"
+          Whisk.ui.info "checking out ref '#{ref}' for ingredient #{self.name}"
           shell_out("git checkout #{ref}", :cwd => self.name)
       end
 
@@ -43,7 +43,7 @@ class Whisk
       end
 
       def fetch
-          Whisk::Log.info "fetching ingredient '#{self.name}', from git url #{self.source}"
+          Whisk.ui.info "fetching ingredient '#{self.name}', from git url #{self.source}"
           shell_out("git fetch --all")
       end
 
@@ -57,7 +57,7 @@ class Whisk
             self.checkout
           end
         rescue Exception => e
-          Whisk::Log.error "#{e.message} #{e.backtrace}"
+          Whisk.ui.error "#{e.message} #{e.backtrace}"
           raise
         end
       end

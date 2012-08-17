@@ -16,4 +16,14 @@
 # limitations under the License.
 #
 
+require 'chef/knife'
 require 'whisk/version'
+require 'whisk/bowl'
+
+class Whisk
+  DEFAULT_FILENAME = 'Whiskfile'
+
+  class << self
+    attr_accessor :ui
+  end
+end

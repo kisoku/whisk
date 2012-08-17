@@ -55,7 +55,7 @@ class Whisk
     def create!
       unless path.nil? and Dir.exists? path
         begin
-          Whisk::Log.info "creating bowl '#{name}' with path #{path}"
+          Whisk.ui.info "creating bowl '#{name}' with path #{path}"
           ::FileUtils.mkdir_p path
         rescue Exception => e
           puts "#{e.backtrace} #{e.message}"
@@ -67,13 +67,13 @@ class Whisk
       self.create!
       ::Dir.chdir path
 
-      Whisk::Log.info "preparing bowl '#{name}' with path #{path}"
+      Whisk.ui.info "preparing bowl '#{name}' with path #{path}"
 
       ingredients.each do |name, ingredient|
         begin
           ingredient.prepare
         rescue Exception => e
-          Whisk::Log.error "failed fetching ingredient #{name}! bailing"
+          Whisk.ui.error "failed fetching ingredient #{name}! bailing"
           raise
           exit 1
         end

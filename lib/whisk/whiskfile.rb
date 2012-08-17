@@ -20,6 +20,9 @@
 #
 # from_file is derived from chef/chef/lib/chef/mixin/from_file.rb
 #
+#
+
+require 'whisk'
 
 class Whisk
   class WhiskFile

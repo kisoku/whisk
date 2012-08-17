@@ -18,30 +18,6 @@
 #
 
 $:.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
+require 'whisk/cli'
 
-require 'rubygems'
-require 'logger'
-require 'whisk/config'
-require 'whisk/log'
-
-# borrowed from chef/chef/lib/chef/application.rb
-logger = Logger.new(STDOUT)
-STDOUT.sync = true
-logger.formatter = Whisk::Log.logger.formatter
-Whisk::Log::Formatter.show_time = false
-Whisk::Log.loggers << logger
-
-if File.exists?("Whiskfile")
-  whiskfile = "Whiskfile"
-else
-  whiskfile = File.join(ENV['HOME'], '.chef', 'whisk.rb')
-end
-
-Whisk::Log.info "Loading configuration from Whiskfile: #{whiskfile}"
-
-Whisk::Config.from_file(whiskfile)
-
-bowls = Whisk::Config.bowls
-bowls.each do |name, bowl|
-  bowl.prepare
-end
+Whisk::CLI.start
