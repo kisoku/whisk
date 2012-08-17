@@ -12,7 +12,9 @@ although there are plans to include support for community cookbooks in the
 future.
 
 Whisk will prepare one or multiple 'bowls' of cookbooks as specified in your
-whisk.rb file. 
+Whiskfile.
+
+## Example Whiskfile ##
 
     cb_path = "/home/msf/hack/whisk/%s"
     github = "git://github.com/cookbooks/%s.git"
@@ -25,5 +27,14 @@ whisk.rb file.
         options { :ref => 'master' }
       end
     end 
+
+## Running prepare ##
+
+    $ whisk prepare
+    Creating bowl 'production' with path /home/msf/hack/whisk/production
+    Preparing bowl 'production' with path /home/msf/hack/whisk/production
+    Cloning ingredient ntp, from git url git://github.com/cookbooks/ntp.git
+    Cloning into 'ntp'...
+    Checking out ref 'master' for ingredient ntp
 
 
