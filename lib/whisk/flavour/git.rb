@@ -53,6 +53,10 @@ class Whisk
       def status
           shell_out("git status", :cwd => self.name)
       end
+
+      def update
+          shell_out("git remote update", :cwd => self.name)
+      end
     end
   end
 end

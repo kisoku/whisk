@@ -77,5 +77,20 @@ class Whisk
         bowl.status
       end
     end
+
+    method_option :whiskfile,
+      type: :string,
+      default: File.join(Dir.pwd, Whisk::DEFAULT_FILENAME),
+      desc: "Path to a Whiskfile to operate off of.",
+      aliases: "-w",
+      banner: "PATH"
+    desc "prepare", "prepare a bowl by cloning any missing repositories"
+    def update(bowl=nil, ingredient=nil)
+      whiskfile = ::Whisk::WhiskFile.from_file(options[:whiskfile])
+      bowls = filter_bowls(whiskfile.bowls, bowl, ingredient)
+      bowls.each do |name, bowl|
+        bowl.update
+      end
+    end
   end
 end

@@ -82,5 +82,13 @@ class Whisk
         ingredient.status
       end
     end
+
+    def update
+      ::Dir.chdir path
+      ingredients.each do |name, ingredient|
+        Whisk.ui.info "Updating ingredient '#{self.name}/#{name}'"
+        ingredient.update
+      end
+    end
   end
 end
