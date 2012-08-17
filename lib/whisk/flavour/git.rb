@@ -34,18 +34,16 @@ class Whisk
       end
 
       def checkout(ref="master")
+        if self.options and self.options.has_key? :ref
           Whisk.ui.info "Checking out ref '#{ref}' for ingredient #{self.name}"
           shell_out("git checkout #{ref}", :cwd => self.name)
+        end
       end
 
       def prepare
         begin
           self.clone
-          if self.options and self.options.has_key? :ref
-            self.checkout self.options[:ref]
-          else
-            self.checkout
-          end
+          self.checkout
         rescue Exception => e
           Whisk.ui.error "#{e.message} #{e.backtrace}"
           raise
