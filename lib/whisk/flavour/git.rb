@@ -16,7 +16,6 @@
 # limitations under the License.
 
 require 'whisk/mixin/shellout'
-require 'whisk/log'
 require 'whisk/ingredient'
 
 class Whisk

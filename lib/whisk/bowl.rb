@@ -17,7 +17,6 @@
 
 require 'pp'
 require 'fileutils'
-require 'whisk/log'
 require 'whisk/ingredient'
 
 class Whisk
