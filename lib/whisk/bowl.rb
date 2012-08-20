@@ -25,7 +25,7 @@ class Whisk
 
     include Chef::Mixin::ParamsValidate
 
-    attr_reader :name
+    attr_reader :name, :ingredients
 
     def initialize(name, path=nil, &block)
       @name = name
