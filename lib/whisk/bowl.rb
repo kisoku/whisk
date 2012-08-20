@@ -17,6 +17,7 @@
 
 require 'fileutils'
 require 'chef/mixin/params_validate'
+require 'whisk/exceptions'
 require 'whisk/ingredient'
 
 class Whisk

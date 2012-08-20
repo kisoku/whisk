@@ -16,6 +16,7 @@
 # limitations under the License.
 
 require 'chef/mixin/params_validate'
+require 'whisk/exceptions'
 require 'whisk/flavours'
 
 class Whisk
