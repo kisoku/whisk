@@ -15,13 +15,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'pp'
 require 'fileutils'
+require 'chef/mixin/params_validate'
+require 'whisk/exceptions'
 require 'whisk/ingredient'
 
 class Whisk
   class Bowl
-    attr_accessor :name, :ingredients
+
+    include Chef::Mixin::ParamsValidate
+
+    attr_reader :name, :ingredients
 
     def initialize(name, path=nil, &block)
       @name = name
@@ -29,14 +33,6 @@ class Whisk
       @ingredients = {}
 
       instance_eval(&block) if block_given?
-    end
-
-    def path(pth=nil)
-      if pth
-        @path = pth
-      else
-        @path
-      end
     end
 
     def ingredient(iname, &block)
@@ -89,6 +85,10 @@ class Whisk
         Whisk.ui.info "Updating ingredient '#{self.name}/#{name}'"
         ingredient.update
       end
+    end
+
+    def path(arg=nil)
+      set_or_return(:path, arg, :default => File.join(Dir.getwd, name))
     end
   end
 end

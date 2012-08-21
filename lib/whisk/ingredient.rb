@@ -16,6 +16,7 @@
 # limitations under the License.
 
 require 'chef/mixin/params_validate'
+require 'whisk/exceptions'
 require 'whisk/flavours'
 
 class Whisk
@@ -28,8 +29,8 @@ class Whisk
     def initialize(name, &block)
       @name = name
       @flavour = 'git'
+      @ref = nil
       @source = nil
-      @options = {}
 
       instance_eval(&block) if block_given?
 
@@ -44,8 +45,8 @@ class Whisk
       set_or_return(:flavour, arg, :default => 'git')
     end
 
-    def options(arg=nil)
-      set_or_return(:options, arg, :default => {})
+    def ref(arg=nil)
+      set_or_return(:ref, arg, :kind_of => String)
     end
   end
 end
