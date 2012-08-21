@@ -26,17 +26,30 @@ class Whisk
 
       def clone
         if ::File.exists? File.join(Dir.pwd, name, ".git", "config")
-          Whisk.ui.info "Ingredient #{self.name} already prepared, moving on"
+          Whisk.ui.info "Ingredient '#{self.name}' already prepared"
         else
-          Whisk.ui.info "Cloning ingredient #{self.name}, " + "from git url #{self.source}"
+          Whisk.ui.info "Cloning ingredient '#{self.name}', " + "from url #{self.source}"
           shell_out("git clone #{self.source} #{self.name}")
         end
       end
 
-      def checkout(ref="master")
-        if self.options and self.options.has_key? :ref
-          Whisk.ui.info "Checking out ref '#{ref}' for ingredient #{self.name}"
-          shell_out("git checkout #{ref}", :cwd => self.name)
+      def current_ref
+        cref = run_command("git rev-parse --abbrev-ref HEAD", :cwd => self.name).stdout.chomp
+        if cref == 'HEAD'
+          return run_command("git describe", :cwd => self.name).stdout.chomp
+        else
+          return cref
+        end
+      end
+
+      def checkout
+        if self.ref
+          if self.current_ref == self.ref
+            Whisk.ui.info "Ingredient '#{self.name}' already at ref '#{self.ref}'"
+          else
+            Whisk.ui.info "Checking out ref '#{self.ref}' for ingredient '#{self.name}'"
+            shell_out("git checkout #{self.ref}", :cwd => self.name)
+          end
         end
       end
 

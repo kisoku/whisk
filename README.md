@@ -27,7 +27,7 @@ Whiskfile.
 
       ingredient "ntp" do
         source github % "ntp"
-        options { :ref => 'master' }
+        ref '1.1.2'
       end
     end
 
@@ -43,7 +43,7 @@ checkout a specified ref.
     Preparing bowl 'production' with path /home/msf/hack/whisk/production
     Cloning ingredient ntp, from git url git://github.com/cookbooks/ntp.git
     Cloning into 'ntp'...
-    Checking out ref 'master' for ingredient ntp
+    Checking out ref '1.1.2' for ingredient ntp
 
 You can also use specify an optional filter to run prepare on a subset of
 cookbooks using ruby regexes.
