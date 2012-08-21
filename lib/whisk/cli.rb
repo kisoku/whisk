@@ -69,7 +69,7 @@ class Whisk
       desc: "Path to a Whiskfile to operate off of.",
       aliases: "-w",
       banner: "PATH"
-    desc "prepare", "prepare a bowl by cloning any missing repositories"
+    desc "status", "run git status in your bowls"
     def status(bowl=nil, ingredient=nil)
       whiskfile = ::Whisk::WhiskFile.from_file(options[:whiskfile])
       bowls = filter_bowls(whiskfile.bowls, bowl, ingredient)
@@ -84,7 +84,7 @@ class Whisk
       desc: "Path to a Whiskfile to operate off of.",
       aliases: "-w",
       banner: "PATH"
-    desc "prepare", "prepare a bowl by cloning any missing repositories"
+    desc "update", "run git remote update in your bowls"
     def update(bowl=nil, ingredient=nil)
       whiskfile = ::Whisk::WhiskFile.from_file(options[:whiskfile])
       bowls = filter_bowls(whiskfile.bowls, bowl, ingredient)
