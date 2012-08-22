@@ -29,14 +29,14 @@ class Whisk
           Whisk.ui.info "Ingredient '#{resource.name}' already prepared"
         else
           Whisk.ui.info "Cloning ingredient '#{resource.name}', " + "from url #{resource.source}"
-          shell_out("git clone #{resource.source} #{resource.name}")
+          shell_out!("git clone #{resource.source} #{resource.name}")
         end
       end
 
       def current_ref
-        cref = run_command("git rev-parse --abbrev-ref HEAD", :cwd => resource.name).stdout.chomp
+        cref = run_command!("git rev-parse --abbrev-ref HEAD", :cwd => resource.name).stdout.chomp
         if cref == 'HEAD'
-          return run_command("git describe", :cwd => resource.name).stdout.chomp
+          return run_command!("git describe", :cwd => resource.name).stdout.chomp
         else
           return cref
         end
@@ -48,7 +48,7 @@ class Whisk
             Whisk.ui.info "Ingredient '#{resource.name}' already at ref '#{resource.ref}'"
           else
             Whisk.ui.info "Checking out ref '#{resource.ref}' for ingredient '#{resource.name}'"
-            shell_out("git checkout #{resource.ref}", :cwd => resource.name)
+            shell_out!("git checkout #{resource.ref}", :cwd => resource.name)
           end
         end
       end
@@ -60,12 +60,12 @@ class Whisk
 
       def action_status
         Whisk.ui.info "Status for ingredient '#{resource.name}'"
-        shell_out("git status", :cwd => resource.name)
+        shell_out!("git status", :cwd => resource.name)
       end
 
       def action_update
         Whisk.ui.info "Updating ingredient '#{resource.name}'"
-        shell_out("git remote update", :cwd => resource.name)
+        shell_out!("git remote update", :cwd => resource.name)
       end
     end
   end
