@@ -43,6 +43,13 @@ class Whisk
         cmd.run_command
         cmd
       end
+
+      def run_command!(*command_args)
+        cmd = run_command(*command_args)
+        cmd.error!
+        cmd
+      end
+
     end
   end
 end
