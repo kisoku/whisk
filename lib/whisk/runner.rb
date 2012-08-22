@@ -45,8 +45,6 @@ class Whisk
         begin
           bowl.run_action(action)
         rescue Exception => e
-          require 'pry'
-          binding.pry
           Whisk.ui.error "Caught exception while running action #{action} on bowl #{bowl.name}"
           Whisk.ui.output e.backtrace
           exit 1
