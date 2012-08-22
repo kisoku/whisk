@@ -38,7 +38,7 @@ class Whisk
       end
 
       def bowl(name, &block)
-        b = Whisk::Bowl.new(name)
+        b = Whisk::Resource::Bowl.new(name)
         b.instance_eval(&block)
         add_bowl(b)
       end

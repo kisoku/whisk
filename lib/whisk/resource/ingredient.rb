@@ -14,12 +14,32 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
-require 'whisk/flavour/git'
+require 'whisk/exceptions'
+require 'whisk/resource'
+require 'whisk/provider/ingredient'
 
 class Whisk
-  FLAVOURS = {
-    'git' => Whisk::Flavour::Git
-  }
+  class Resource
+    class Ingredient < Resource
+
+      include Chef::Mixin::ParamsValidate
+
+      def initialize(name, &block)
+        @provider = Whisk::Provider::Ingredient
+        @ref = nil
+        @source = nil
+
+        super(name, &block)
+      end
+
+      def source(arg=nil)
+        set_or_return(:source, arg, :required => true)
+      end
+
+      def ref(arg=nil)
+        set_or_return(:ref, arg, :kind_of => String)
+      end
+    end
+  end
 end

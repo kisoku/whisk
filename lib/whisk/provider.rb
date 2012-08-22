@@ -15,15 +15,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-require 'chef/knife'
-require 'whisk/version'
-require 'whisk/resource/bowl'
+# This organization of this class and classes under whisk/provider
+# are directly inspired by Opscode Chef's Chef::Provider
 
 class Whisk
-  DEFAULT_FILENAME = 'Whiskfile'
+  class Provider
+    attr_reader :resource
 
-  class << self
-    attr_accessor :ui
+    def initialize(resource)
+      @resource = resource
+    end
   end
 end

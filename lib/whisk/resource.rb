@@ -14,39 +14,47 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# This organization of this class and classes under whisk/resource
+# are heavily inspired by Opscode Chef's Chef::Resource
+# which was authored by Adam Jacob
 
 require 'chef/mixin/params_validate'
 require 'whisk/exceptions'
-require 'whisk/flavours'
 
 class Whisk
-  class Ingredient
+  class Resource
 
     include Chef::Mixin::ParamsValidate
 
     attr_reader :name
+    attr_accessor :provider
 
     def initialize(name, &block)
       @name = name
-      @flavour = 'git'
-      @ref = nil
-      @source = nil
 
       instance_eval(&block) if block_given?
-
-      self.class.send(:include, Whisk::FLAVOURS[@flavour])
     end
 
-    def source(arg=nil)
-      set_or_return(:source, arg, :required => true)
+    def provider(arg=nil)
+      klass = if arg.kind_of?(String) || arg.kind_of?(Symbol)
+                raise ArgumentError "must provider provider by klass"
+                # lookup_provider_constant(arg)
+              else
+                arg
+              end
+      set_or_return(
+        :provider,
+        klass,
+        :kind_of => [ Class ]
+      )
     end
 
-    def flavour(arg=nil)
-      set_or_return(:flavour, arg, :default => 'git')
-    end
-
-    def ref(arg=nil)
-      set_or_return(:ref, arg, :kind_of => String)
+    def run_action(action)
+      if self.provider
+        provider = self.provider.new(self)
+        provider.send("action_#{action}")
+      end
     end
   end
 end

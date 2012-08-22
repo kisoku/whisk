@@ -18,7 +18,7 @@
 
 require 'thor'
 require 'whisk'
-require 'whisk/whiskfile'
+require 'whisk/runner'
 
 def filter_bowls(bowls, bowl=nil, ingredient=nil)
   if bowl
@@ -54,13 +54,9 @@ class Whisk
       aliases: "-w",
       banner: "PATH"
     desc "prepare", "prepare a bowl by cloning any missing repositories"
-    def prepare(bowl=nil, ingredient=nil)
-      whiskfile = ::Whisk::WhiskFile.from_file(options[:whiskfile])
-      bowls = filter_bowls(whiskfile.bowls, bowl, ingredient)
-
-      bowls.each do |name, bowl|
-        bowl.prepare
-      end
+    def prepare(filter=nil)
+      runner = Whisk::Runner.new(options[:whiskfile], filter)
+      runner.run('prepare')
     end
 
     method_option :whiskfile,
@@ -70,12 +66,9 @@ class Whisk
       aliases: "-w",
       banner: "PATH"
     desc "status", "run git status in your bowls"
-    def status(bowl=nil, ingredient=nil)
-      whiskfile = ::Whisk::WhiskFile.from_file(options[:whiskfile])
-      bowls = filter_bowls(whiskfile.bowls, bowl, ingredient)
-      bowls.each do |name, bowl|
-        bowl.status
-      end
+    def status(filter=nil)
+      runner = Whisk::Runner.new(options[:whiskfile], filter)
+      runner.run('status')
     end
 
     method_option :whiskfile,
@@ -85,12 +78,9 @@ class Whisk
       aliases: "-w",
       banner: "PATH"
     desc "update", "run git remote update in your bowls"
-    def update(bowl=nil, ingredient=nil)
-      whiskfile = ::Whisk::WhiskFile.from_file(options[:whiskfile])
-      bowls = filter_bowls(whiskfile.bowls, bowl, ingredient)
-      bowls.each do |name, bowl|
-        bowl.update
-      end
+    def update(filter=nil)
+      runner = Whisk::Runner.new(options[:whiskfile], filter)
+      runner.run('update')
     end
   end
 end
