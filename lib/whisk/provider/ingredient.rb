@@ -53,6 +53,11 @@ class Whisk
         end
       end
 
+      def action_diff
+        Whisk.ui.info "Diff for ingredient '#{resource.name}'"
+        shell_out!("git status", :cwd => resource.name)
+      end
+
       def action_prepare
         self.clone
         self.checkout

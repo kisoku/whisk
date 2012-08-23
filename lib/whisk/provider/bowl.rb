@@ -40,6 +40,13 @@ class Whisk
         end
       end
 
+      def action_diff
+        if self.exist?
+          ::Dir.chdir resource.path
+          ingredients_run("Diff")
+        end
+      end
+
       def action_prepare
         self.create unless self.exist?
         ::Dir.chdir resource.path
