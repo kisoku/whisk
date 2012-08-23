@@ -20,19 +20,6 @@ require 'thor'
 require 'whisk'
 require 'whisk/runner'
 
-def filter_bowls(bowls, bowl=nil, ingredient=nil)
-  if bowl
-    bowls.delete_if {|k,v| !k.to_s.match(/^#{bowl}$/)}
-    if ingredient
-      bowls.each do |name, b|
-        bowls[name].ingredients.delete_if {|k,v| !k.to_s.match(/^#{ingredient}$/)}
-      end
-    end
-  end
-
-  return bowls
-end
-
 class Whisk
   class CLI < Thor
     def initialize(*)
