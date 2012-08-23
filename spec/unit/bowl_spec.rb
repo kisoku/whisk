@@ -18,7 +18,12 @@
 
 require File.expand_path(File.join(File.dirname(__FILE__), "..", "spec_helper"))
 
-describe Whisk::Bowl do
-  it "should create itself when missing" do
+describe Whisk::Resource::Bowl do
+  before(:each) do
+    @bowl = Whisk::Resource::Bowl.new "test_bowl"
+  end
+
+  it "should default to a sensible path" do
+    File.split(@bowl.path).last.should == @bowl.name
   end
 end
