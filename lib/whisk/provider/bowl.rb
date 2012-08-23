@@ -43,7 +43,7 @@ class Whisk
       def action_diff
         if self.exist?
           ::Dir.chdir resource.path
-          ingredients_run("Diff")
+          ingredients_run("diff")
         end
       end
 
