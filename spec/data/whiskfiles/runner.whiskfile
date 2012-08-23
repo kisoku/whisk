@@ -1,0 +1,25 @@
+cookbooks = %w[ bash build-essential git ntp ssh ]
+
+bowl "production" do
+  cookbooks.each do |cb|
+    ingredient cb do
+      source "git://example.org/cookbooks/%s.git" % cb
+    end
+  end
+end
+
+bowl "testing" do
+  cookbooks.each do |cb|
+    ingredient cb do
+      source "git://example.org/cookbooks/%s.git" % cb
+    end
+  end
+end
+
+bowl "development" do
+  cookbooks.each do |cb|
+    ingredient cb do
+      source "git://example.org/cookbooks/%s.git" % cb
+    end
+  end
+end
