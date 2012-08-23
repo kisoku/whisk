@@ -27,7 +27,6 @@ class Whisk
       attr_reader :ingredients
 
       def initialize(name, &block)
-        @path = nil
         @provider = Whisk::Provider::Bowl
         @ingredients = {}
 
