@@ -15,38 +15,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'chef/mixin/params_validate'
-require 'whisk/exceptions'
-require 'whisk/flavours'
+require 'fileutils'
+require 'whisk/resource'
+require 'whisk/resource/ingredient'
+require 'whisk/provider/bowl'
 
 class Whisk
-  class Ingredient
+  class Resource
+    class Bowl < Resource
 
-    include Chef::Mixin::ParamsValidate
+      attr_reader :ingredients
 
-    attr_reader :name
+      def initialize(name, &block)
+        @provider = Whisk::Provider::Bowl
+        @ingredients = {}
 
-    def initialize(name, &block)
-      @name = name
-      @flavour = 'git'
-      @ref = nil
-      @source = nil
+        super(name, &block)
+      end
 
-      instance_eval(&block) if block_given?
+      def ingredient(iname, &block)
+        if ingredients.has_key? iname
+          raise ArgumentError "Ingredient '#{iname}' has already added to bowl '#{name}'"
+        else
+          ingredients[iname] = Whisk::Resource::Ingredient.new(iname, &block)
+        end
+      end
 
-      self.class.send(:include, Whisk::FLAVOURS[@flavour])
-    end
-
-    def source(arg=nil)
-      set_or_return(:source, arg, :required => true)
-    end
-
-    def flavour(arg=nil)
-      set_or_return(:flavour, arg, :default => 'git')
-    end
-
-    def ref(arg=nil)
-      set_or_return(:ref, arg, :kind_of => String)
+      def path(arg=nil)
+        set_or_return(:path, arg, :default => File.join(Dir.getwd, name))
+      end
     end
   end
 end

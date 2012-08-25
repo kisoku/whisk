@@ -15,15 +15,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+# This organization of this class and classes under whisk/provider
+# are directly inspired by Opscode Chef's Chef::Provider
 
-require File.expand_path(File.join(File.dirname(__FILE__), "..", "spec_helper"))
+class Whisk
+  class Provider
+    attr_reader :resource
 
-describe Whisk::Resource::Bowl do
-  before(:each) do
-    @bowl = Whisk::Resource::Bowl.new "test_bowl"
-  end
-
-  it "should default to a sensible path" do
-    File.split(@bowl.path).last.should == @bowl.name
+    def initialize(resource)
+      @resource = resource
+    end
   end
 end

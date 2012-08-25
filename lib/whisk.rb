@@ -18,7 +18,7 @@
 
 require 'chef/knife'
 require 'whisk/version'
-require 'whisk/bowl'
+require 'whisk/resource/bowl'
 
 class Whisk
   DEFAULT_FILENAME = 'Whiskfile'

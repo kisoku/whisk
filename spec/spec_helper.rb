@@ -17,6 +17,9 @@
 #
 
 require 'rubygems'
-require 'whisk/bowl'
+require 'whisk/runner'
+require 'whisk/resource/bowl'
 
 $:.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
+
+WHISKFILE_DIR = File.join(File.dirname(__FILE__), "data", "whiskfiles")

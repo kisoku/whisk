@@ -31,6 +31,20 @@ Whiskfile.
       end
     end
 
+    bowl "development" do
+      path cb_path % name
+
+      ingredient "ntp" do
+        source github % "ntp"
+	ref 'develop'
+      end
+
+      ingredient "ssh" do
+        source github % "ssh"
+	ref 'develop'
+      end
+    end
+
 # Commands #
 
 ##  whisk prepare ##
@@ -45,17 +59,19 @@ checkout a specified ref.
     Cloning into 'ntp'...
     Checking out ref '1.1.2' for ingredient ntp
 
-You can also use specify an optional filter to run prepare on a subset of
-cookbooks using ruby regexes.
+You can also use specify a filter to run whisk subcommands on a subset of
+cookbooks by specifying the bowl and ingredient separated by a forward slash.
+Wildcards or optional matches can be specified by using ruby syntax.
 
+    # Given the Whiskfile as described earlier in the documentation
     # prepare the 'development' bowl
-    $ whisk prepare dev
+    $ whisk prepare 'dev.*'
 
     # prepare the ntp cookbook in all configured bowls'
-    $ whisk prepare '.*' 'ntp'
+    $ whisk prepare '.*/ntp'
 
     # prepare a list of cookbooks
-    $ whisk prepare 'dev' '(ssh|ntp)'
+    $ whisk prepare 'dev/(ssh|ntp)'
 
 ## whisk status ##
 

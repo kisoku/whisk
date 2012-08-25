@@ -18,20 +18,7 @@
 
 require 'thor'
 require 'whisk'
-require 'whisk/whiskfile'
-
-def filter_bowls(bowls, bowl=nil, ingredient=nil)
-  if bowl
-    bowls.delete_if {|k,v| !k.to_s.match(/^#{bowl}$/)}
-    if ingredient
-      bowls.each do |name, b|
-        bowls[name].ingredients.delete_if {|k,v| !k.to_s.match(/^#{ingredient}$/)}
-      end
-    end
-  end
-
-  return bowls
-end
+require 'whisk/runner'
 
 class Whisk
   class CLI < Thor
@@ -53,14 +40,10 @@ class Whisk
       desc: "Path to a Whiskfile to operate off of.",
       aliases: "-w",
       banner: "PATH"
-    desc "prepare", "prepare a bowl by cloning any missing repositories"
-    def prepare(bowl=nil, ingredient=nil)
-      whiskfile = ::Whisk::WhiskFile.from_file(options[:whiskfile])
-      bowls = filter_bowls(whiskfile.bowls, bowl, ingredient)
-
-      bowls.each do |name, bowl|
-        bowl.prepare
-      end
+    desc "diff", "run git diff in your bowls"
+    def diff(filter=nil)
+      runner = Whisk::Runner.new(options[:whiskfile], filter)
+      runner.run('diff')
     end
 
     method_option :whiskfile,
@@ -70,12 +53,9 @@ class Whisk
       aliases: "-w",
       banner: "PATH"
     desc "prepare", "prepare a bowl by cloning any missing repositories"
-    def status(bowl=nil, ingredient=nil)
-      whiskfile = ::Whisk::WhiskFile.from_file(options[:whiskfile])
-      bowls = filter_bowls(whiskfile.bowls, bowl, ingredient)
-      bowls.each do |name, bowl|
-        bowl.status
-      end
+    def prepare(filter=nil)
+      runner = Whisk::Runner.new(options[:whiskfile], filter)
+      runner.run('prepare')
     end
 
     method_option :whiskfile,
@@ -84,13 +64,22 @@ class Whisk
       desc: "Path to a Whiskfile to operate off of.",
       aliases: "-w",
       banner: "PATH"
-    desc "prepare", "prepare a bowl by cloning any missing repositories"
-    def update(bowl=nil, ingredient=nil)
-      whiskfile = ::Whisk::WhiskFile.from_file(options[:whiskfile])
-      bowls = filter_bowls(whiskfile.bowls, bowl, ingredient)
-      bowls.each do |name, bowl|
-        bowl.update
-      end
+    desc "status", "run git status in your bowls"
+    def status(filter=nil)
+      runner = Whisk::Runner.new(options[:whiskfile], filter)
+      runner.run('status')
+    end
+
+    method_option :whiskfile,
+      type: :string,
+      default: File.join(Dir.pwd, Whisk::DEFAULT_FILENAME),
+      desc: "Path to a Whiskfile to operate off of.",
+      aliases: "-w",
+      banner: "PATH"
+    desc "update", "run git remote update in your bowls"
+    def update(filter=nil)
+      runner = Whisk::Runner.new(options[:whiskfile], filter)
+      runner.run('update')
     end
   end
 end
