@@ -52,6 +52,18 @@ class Whisk
       desc: "Path to a Whiskfile to operate off of.",
       aliases: "-w",
       banner: "PATH"
+    desc "list", "list the configured bowls and ingredients"
+    def list(filter=nil)
+      runner = Whisk::Runner.new(options[:whiskfile], filter)
+      runner.run('list')
+    end
+
+    method_option :whiskfile,
+      type: :string,
+      default: File.join(Dir.pwd, Whisk::DEFAULT_FILENAME),
+      desc: "Path to a Whiskfile to operate off of.",
+      aliases: "-w",
+      banner: "PATH"
     desc "prepare", "prepare a bowl by cloning any missing repositories"
     def prepare(filter=nil)
       runner = Whisk::Runner.new(options[:whiskfile], filter)

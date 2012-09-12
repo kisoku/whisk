@@ -31,7 +31,7 @@ class Whisk
     class << self
       def add_bowl(bowl)
         if @@bowls.has_key? name
-          raise ArgumentError "bowl #{name} already exists"
+          raise ArgumentError, "bowl #{name} already exists"
         else
           @@bowls[bowl.name] = bowl
         end

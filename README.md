@@ -36,16 +36,30 @@ Whiskfile.
 
       ingredient "ntp" do
         source github % "ntp"
-	ref 'develop'
+        ref 'develop'
       end
 
       ingredient "ssh" do
         source github % "ssh"
-	ref 'develop'
+        ref 'develop'
       end
     end
 
 # Commands #
+
+##  whisk list ##
+
+The list subcommand will list the short name of all of the configured
+ingredients. This short name consists of the bowl and ingredient names
+separated by a forward slash. These short names maybe be used as filters for
+most other subcommands
+
+    $ whisk list
+    production/ntp
+    production/ssh
+    development/ntp
+    development/ssh
+
 
 ##  whisk prepare ##
 
