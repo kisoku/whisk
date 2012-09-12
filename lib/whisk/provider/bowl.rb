@@ -47,6 +47,14 @@ class Whisk
         end
       end
 
+      def action_list
+        if self.exist?
+          resource.ingredients.each do |name, ingredient|
+            Whisk.ui.info("#{resource.name}/#{ingredient.name}")
+          end
+        end
+      end
+
       def action_prepare
         self.create unless self.exist?
         ::Dir.chdir resource.path
