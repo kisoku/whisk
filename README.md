@@ -36,12 +36,12 @@ Whiskfile.
 
       ingredient "ntp" do
         source github % "ntp"
-	ref 'develop'
+        ref 'develop'
       end
 
       ingredient "ssh" do
         source github % "ssh"
-	ref 'develop'
+        ref 'develop'
       end
     end
 
