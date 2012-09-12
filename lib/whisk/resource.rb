@@ -38,7 +38,7 @@ class Whisk
 
     def provider(arg=nil)
       klass = if arg.kind_of?(String) || arg.kind_of?(Symbol)
-                raise ArgumentError "must provider provider by klass"
+                raise ArgumentError, "must provide provider by klass"
                 # lookup_provider_constant(arg)
               else
                 arg
