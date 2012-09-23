@@ -41,6 +41,11 @@ Whiskfile.
       end
     end
 
+Additionally, whisk can take advantage of knife to upload cookbooks.
+Whisk requires that the following code be added to your knife.rb
+
+    cookbook_path ENV['WHISK_COOKBOOK_PATH']
+
 # Commands #
 
 ##  whisk list ##
@@ -125,3 +130,18 @@ to run update on a subset of ingredients
 
     # only update the 'development bowl'
     $ whisk update dev
+
+## whisk upload ##
+
+Whisk upload will upload all bowls specified by the Whiskfile to a chef server
+
+    # upload all bowls to the chef server
+    $ whisk upload
+    $ ruby bin/whisk upload
+    Uploading ingredients in bowl 'testing'
+    Uploading ntp                 [1.2.0]
+    Uploading openssh             [1.0.0]
+    Uploaded 2 cookbooks.
+    Uploading ingredients in bowl 'production'
+    Uploading openssh             [1.0.0]
+    Uploaded 1 cookbook.
