@@ -18,10 +18,13 @@
 
 require 'whisk'
 require 'whisk/provider'
+require 'whisk/mixin/shellout'
 
 class Whisk
   class Provider
     class Bowl < Provider
+
+      include Whisk::Mixin::ShellOut
 
       def exist?
         ::Dir.exist? resource.path
@@ -31,6 +34,13 @@ class Whisk
         resource.ingredients.each do |name, ingredient|
           ingredient.run_action(action)
         end
+      end
+
+      def knife_env
+        cb_path = resource.path
+        return {
+          'WHISK_COOKBOOK_PATH' => cb_path
+        }
       end
 
       def create
@@ -74,6 +84,13 @@ class Whisk
         if self.exist?
           ::Dir.chdir resource.path
           ingredients_run("update")
+        end
+      end
+
+      def action_upload
+        if self.exist?
+          Whisk.ui.info "Uploading ingredients in bowl '#{resource.name}'"
+          shell_out!("knife cookbook upload --all", :env => knife_env)
         end
       end
     end

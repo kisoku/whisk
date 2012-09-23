@@ -93,5 +93,18 @@ class Whisk
       runner = Whisk::Runner.new(options[:whiskfile], filter)
       runner.run('update')
     end
+
+    method_option :whiskfile,
+      type: :string,
+      default: File.join(Dir.pwd, Whisk::DEFAULT_FILENAME),
+      desc: "Path to a Whiskfile to operate off of.",
+      aliases: "-w",
+      banner: "PATH"
+    desc "upload", "upload the specifiec bowls to a chef server" 
+    def upload(filter=nil)
+      runner = Whisk::Runner.new(options[:whiskfile], filter)
+      runner.run('upload')
+    end
+
   end
 end

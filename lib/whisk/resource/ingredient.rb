@@ -25,7 +25,10 @@ class Whisk
 
       include Chef::Mixin::ParamsValidate
 
-      def initialize(name, &block)
+      attr_accessor :bowl
+
+      def initialize(name, bowl, &block)
+        @bowl = bowl
         @provider = Whisk::Provider::Ingredient
         @ref = nil
         @source = nil

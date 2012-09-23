@@ -35,9 +35,9 @@ class Whisk
 
       def ingredient(iname, &block)
         if ingredients.has_key? iname
-          raise ArgumentError, "Ingredient '#{iname}' has already added to bowl '#{name}'"
+          raise ArgumentError, "Ingredient '#{iname}' has already been added to bowl '#{name}'"
         else
-          ingredients[iname] = Whisk::Resource::Ingredient.new(iname, &block)
+          ingredients[iname] = Whisk::Resource::Ingredient.new(iname, self, &block)
         end
       end
 
