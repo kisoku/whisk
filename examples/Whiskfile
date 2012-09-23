@@ -17,12 +17,12 @@
 #
 
 whisk_dir = "#{ENV['HOME']}/whisk"
-github = "git://github.com/cookbooks/%s.git"
+github = "git://github.com/opscode-cookbooks/%s.git"
 
 bowl "testing" do
   path File.join(whisk_dir, "testing")
-  ingredient 'ssh' do
-    source github % 'ssh'
+  ingredient 'openssh' do
+    source github % 'openssh'
   end
 
   ingredient 'ntp' do
@@ -32,8 +32,8 @@ end
 
 bowl "production" do
   path File.join(whisk_dir, "production")
-  ingredient 'ssh' do
-    source github % 'ssh'
-    ref '0.1.0'
+  ingredient 'openssh' do
+    source github % 'openssh'
+    ref '1.0.0'
   end
 end

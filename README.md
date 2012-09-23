@@ -19,29 +19,25 @@ Whiskfile.
 
 ## Example Whiskfile ##
 
-    cb_path = "/home/msf/hack/whisk/%s"
-    github = "git://github.com/cookbooks/%s.git"
+    whisk_dir = "#{ENV['HOME']}/whisk"
+    github = "git://github.com/opscode-cookbooks/%s.git"
 
-    bowl "production" do
-      path cb_path % name
+    bowl "testing" do
+      path File.join(whisk_dir, "testing")
+      ingredient 'openssh' do
+        source github % 'openssh'
+      end
 
-      ingredient "ntp" do
-        source github % "ntp"
-        ref '1.1.2'
+      ingredient 'ntp' do
+        source github % 'ntp'
       end
     end
 
-    bowl "development" do
-      path cb_path % name
-
-      ingredient "ntp" do
-        source github % "ntp"
-        ref 'develop'
-      end
-
-      ingredient "ssh" do
-        source github % "ssh"
-        ref 'develop'
+    bowl "production" do
+      path File.join(whisk_dir, "production")
+      ingredient 'openssh' do
+        source github % 'openssh'
+        ref '1.0.0'
       end
     end
 
@@ -55,11 +51,9 @@ separated by a forward slash. These short names maybe be used as filters for
 most other subcommands
 
     $ whisk list
-    production/ntp
-    production/ssh
-    development/ntp
-    development/ssh
-
+    testing/openssh
+    testing/ntp
+    production/openssh
 
 ##  whisk prepare ##
 
@@ -67,11 +61,20 @@ The prepare subcommand allows you to clone your ingredients and optional
 checkout a specified ref.
 
     $ whisk prepare
-    Creating bowl 'production' with path /home/msf/hack/whisk/production
-    Preparing bowl 'production' with path /home/msf/hack/whisk/production
-    Cloning ingredient ntp, from git url git://github.com/cookbooks/ntp.git
+    Creating bowl 'testing' with path /home/msf/whisk/testing
+    Preparing bowl 'testing' with path /home/msf/whisk/testing
+    Cloning ingredient 'openssh', from url
+    git://github.com/opscode-cookbooks/openssh.git
+    Cloning into 'openssh'...
+    Cloning ingredient 'ntp', from url
+    git://github.com/opscode-cookbooks/ntp.git
     Cloning into 'ntp'...
-    Checking out ref '1.1.2' for ingredient ntp
+    Creating bowl 'production' with path /home/msf/whisk/production
+    Preparing bowl 'production' with path /home/msf/whisk/production
+    Cloning ingredient 'openssh', from url
+    git://github.com/opscode-cookbooks/openssh.git
+    Cloning into 'openssh'...
+    Checking out ref '1.0.0' for ingredient 'openssh'
 
 You can also use specify a filter to run whisk subcommands on a subset of
 cookbooks by specifying the bowl and ingredient separated by a forward slash.
@@ -96,9 +99,18 @@ to run update on a subset of ingredients
 
     # show status for all configured bowls
     $ whisk status
-    Status for ingredient 'production/ntp'
+    Status for bowl 'testing' with path /home/msf/whisk/testing
+    Status for ingredient 'openssh'
     # On branch master
     nothing to commit (working directory clean)
+    Status for ingredient 'ntp'
+    # On branch master
+    nothing to commit (working directory clean)
+    Status for bowl 'production' with path /home/msf/whisk/production
+    Status for ingredient 'openssh'
+    # Not currently on any branch.
+    nothing to commit (working directory clean)
+
 
 ## whisk update ##
 
