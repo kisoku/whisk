@@ -100,7 +100,7 @@ class Whisk
       desc: "Path to a Whiskfile to operate off of.",
       aliases: "-w",
       banner: "PATH"
-    desc "upload", "upload the specifiec bowls to a chef server" 
+    desc "upload", "upload the specified bowls to a chef server"
     def upload(filter=nil)
       runner = Whisk::Runner.new(options[:whiskfile], filter)
       runner.run('upload')
