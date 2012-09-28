@@ -29,7 +29,13 @@ class Whisk
           Whisk.ui.info "Ingredient '#{resource.name}' already prepared"
         else
           Whisk.ui.info "Cloning ingredient '#{resource.name}', " + "from url #{resource.source}"
-          shell_out!("git clone #{resource.source} #{resource.name}")
+          cmd = run_command!("git clone #{resource.source} #{resource.name}")
+          cmd.stdout.lines.each do |line|
+            Whisk.ui.info "\s\s#{line}"
+          end
+          cmd.stderr.lines.each do |line|
+            Whisk.ui.info "\s\s#{line}"
+          end
         end
       end
 
@@ -48,7 +54,13 @@ class Whisk
             Whisk.ui.info "Ingredient '#{resource.name}' already at ref '#{resource.ref}'"
           else
             Whisk.ui.info "Checking out ref '#{resource.ref}' for ingredient '#{resource.name}'"
-            shell_out!("git checkout #{resource.ref}", :cwd => resource.name)
+            cmd = run_command!("git checkout #{resource.ref}", :cwd => resource.name)
+            cmd.stdout.lines.each do |line|
+              Whisk.ui.info "\s\s#{line}"
+            end
+            cmd.stderr.lines.each do |line|
+              Whisk.ui.info "\s\s#{line}"
+            end
           end
         end
       end
@@ -65,12 +77,25 @@ class Whisk
 
       def action_status
         Whisk.ui.info "Status for ingredient '#{resource.name}'"
-        shell_out!("git status", :cwd => resource.name)
+        cmd = run_command!("git status", :cwd => resource.name)
+        cmd.stdout.lines.each do |line|
+          Whisk.ui.info "\s\s#{line}"
+        end
+        cmd.stderr.lines.each do |line|
+          Whisk.ui.info "\s\s#{line}"
+        end
+        Whisk.ui.info "\n"
       end
 
       def action_update
         Whisk.ui.info "Updating ingredient '#{resource.name}'"
-        shell_out!("git remote update", :cwd => resource.name)
+        cmd = run_command!("git remote update", :cwd => resource.name)
+        cmd.stdout.lines.each do |line|
+          Whisk.ui.info "\s\s#{line}"
+        end
+        cmd.stderr.lines.each do |line|
+          Whisk.ui.info "\s\s#{line}"
+        end
       end
     end
   end
