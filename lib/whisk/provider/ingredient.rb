@@ -36,7 +36,7 @@ class Whisk
       def current_ref
         cref = run_command!("git rev-parse --abbrev-ref HEAD", :cwd => resource.name).stdout.chomp
         if cref == 'HEAD'
-          return run_command!("git describe", :cwd => resource.name).stdout.chomp
+          return run_command!("git describe --tags", :cwd => resource.name).stdout.chomp
         else
           return cref
         end

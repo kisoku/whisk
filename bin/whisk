@@ -1,4 +1,4 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 #
 # Author:: Mathieu Sauve-Frankel <msf@kisoku.net>
 # Copyright:: Copyright (c) 2012 Mathieu Sauve-Frankel
