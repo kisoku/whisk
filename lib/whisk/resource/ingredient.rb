@@ -36,6 +36,10 @@ class Whisk
         super(name, &block)
       end
 
+      def path
+        File.join(self.bowl.path, self.name)
+      end
+
       def source(arg=nil)
         set_or_return(:source, arg, :required => true)
       end
