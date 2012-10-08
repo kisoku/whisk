@@ -24,7 +24,6 @@ class Whisk
   class CLI < Thor
     def initialize(*)
       super
-      # JW TODO: Replace Chef::Knife::UI with our own UI class
       ::Whisk.ui = Chef::Knife::UI.new(STDOUT, STDERR, STDIN, {})
       @options = options.dup # unfreeze frozen options Hash from Thor
     rescue Error => e
