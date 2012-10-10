@@ -24,6 +24,23 @@ class Whisk
 
       include Whisk::Mixin::ShellOut
 
+      def checkout
+        if resource.ref
+          if self.current_ref == resource.ref
+            Whisk.ui.info "Ingredient '#{resource.name}' already at ref '#{resource.ref}'"
+          else
+            Whisk.ui.info "Checking out ref '#{resource.ref}' for ingredient '#{resource.name}'"
+            cmd = run_command!("git checkout #{resource.ref}", :cwd => resource.path)
+            cmd.stdout.lines.each do |line|
+              Whisk.ui.info "\s\s#{line}"
+            end
+            cmd.stderr.lines.each do |line|
+              Whisk.ui.info "\s\s#{line}"
+            end
+          end
+        end
+      end
+
       def clone
         if ::File.exists? File.join(Dir.pwd, resource.name, ".git", "config")
           Whisk.ui.info "Ingredient '#{resource.name}' already prepared"
@@ -45,23 +62,6 @@ class Whisk
           return run_command!("git describe --tags", :cwd => resource.path).stdout.chomp
         else
           return cref
-        end
-      end
-
-      def checkout
-        if resource.ref
-          if self.current_ref == resource.ref
-            Whisk.ui.info "Ingredient '#{resource.name}' already at ref '#{resource.ref}'"
-          else
-            Whisk.ui.info "Checking out ref '#{resource.ref}' for ingredient '#{resource.name}'"
-            cmd = run_command!("git checkout #{resource.ref}", :cwd => resource.path)
-            cmd.stdout.lines.each do |line|
-              Whisk.ui.info "\s\s#{line}"
-            end
-            cmd.stderr.lines.each do |line|
-              Whisk.ui.info "\s\s#{line}"
-            end
-          end
         end
       end
 
