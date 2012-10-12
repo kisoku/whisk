@@ -102,7 +102,8 @@ class Whisk
       def action_upload
         if self.exist?
           Whisk.ui.info "Uploading ingredients in bowl '#{resource.name}'"
-          shell_out!("knife cookbook upload --all", :env => knife_env)
+          cookbooks = resource.ingredients.to_a.map {|name, cb| name}
+          shell_out!("knife cookbook upload #{cookbooks.join(' ')}", :env => knife_env)
         end
       end
     end
