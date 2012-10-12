@@ -40,6 +40,12 @@ class Whisk
       aliases: "-w",
       banner: "PATH"
 
+    desc "destroy", "destroy your bowls"
+    def destroy(filter=nil)
+      runner = Whisk::Runner.new(options[:whiskfile], filter)
+      runner.run('destroy')
+    end
+
     desc "diff", "run git diff in your bowls"
     def diff(filter=nil)
       runner = Whisk::Runner.new(options[:whiskfile], filter)

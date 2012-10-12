@@ -52,7 +52,6 @@ class Whisk
         end
         Whisk.ui.info "Adding remote #{remote} to ingredient #{resource.name}"
         run_command!("git remote add #{remote} #{url}")
-        return
       end
 
       def checkout
@@ -133,13 +132,17 @@ class Whisk
             { :default => 'y' }
           )
           if a =~ /y/i
-            ::FileUtils.rm_rf resource.path
+            destroy
             clone
           else
             Whisk.ui.warn "Aborting whisk"
             exit 1
           end
         end
+      end
+
+      def action_destroy
+        destroy
       end
 
       def action_diff
