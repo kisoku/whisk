@@ -48,6 +48,17 @@ Whisk requires that the following code be added to your knife.rb
 
 # Commands #
 
+## whisk destroy ##
+
+Whisk destroys deletes the specified bowls or cookbooks from your filesystem.
+Use with care.
+
+## whisk diff ##
+
+Whisk diff simply runs 'git diff' in each of the ingredients specified. It
+currently has no support for running diff with anything other than the default
+arguments
+
 ##  whisk list ##
 
 The list subcommand will list the short name of all of the configured
