@@ -53,8 +53,6 @@ class Whisk
       def action_destroy
         if self.exist?
           ingredients_run("destroy")
-          require 'pry'
-          binding.pry
           if Dir.entries(resource.path) == ["..", "."]
             Whisk.ui.info("Destroying empty bowl #{resource.name}")
             Dir.unlink(resource.path)
