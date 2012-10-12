@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 
+require 'grit'
 require 'whisk/mixin/shellout'
 
 class Whisk
@@ -42,7 +43,7 @@ class Whisk
       end
 
       def clone
-        if ::File.exists? File.join(Dir.pwd, resource.name, ".git", "config")
+        if git.exist?
           Whisk.ui.info "Ingredient '#{resource.name}' already prepared"
         else
           Whisk.ui.info "Cloning ingredient '#{resource.name}', " + "from url #{resource.source}"
@@ -65,6 +66,13 @@ class Whisk
         end
       end
 
+      def git
+        Grit::Git.new(resource.path)
+      end
+
+      def repo
+        Grit::Repo.new(resource.path)
+      end
       def action_diff
         Whisk.ui.info "Diff for ingredient '#{resource.name}'"
         shell_out!("git diff", :cwd => resource.path)
