@@ -25,6 +25,35 @@ class Whisk
 
       include Whisk::Mixin::ShellOut
 
+      def add_remotes
+        resource.remotes.each_pair do |remote, url|
+          add_remote(remote, url)
+        end
+      end
+
+      def add_remote(remote, url)
+        ::Dir.chdir resource.path
+        if repo.config.keys.include?("remote.#{remote}.url")
+          if remote_changed? remote
+            Whisk.ui.info "Remote #{remote} points to a different url"
+            a = Whisk.ui.ask_question("Would you like to change it to point to #{url} ?",
+                  {:default => 'y'}
+            )
+            if a =~ /y/i
+              run_command!("git remote rm #{remote}")
+            else
+              Whisk.ui.
+            end
+          else
+            Whisk.ui.info "Remote #{remote} already added"
+            return
+          end
+        end
+        Whisk.ui.info "Adding remote #{remote} to ingredient #{resource.name}"
+        run_command!("git remote add #{remote} #{url}")
+        return
+      end
+
       def checkout
         if resource.ref
           if self.current_ref == resource.ref
@@ -44,7 +73,11 @@ class Whisk
 
       def clone
         if git.exist?
-          Whisk.ui.info "Ingredient '#{resource.name}' already prepared"
+          if remote_changed?("origin", resource.source)
+            reset_origin
+          else
+            Whisk.ui.info "Ingredient '#{resource.name}' already prepared"
+          end
         else
           Whisk.ui.info "Cloning ingredient '#{resource.name}', " + "from url #{resource.source}"
           cmd = run_command!("git clone #{resource.source} #{resource.path}")
@@ -66,6 +99,15 @@ class Whisk
         end
       end
 
+      def destroy
+        if git.exist?
+          Whisk.ui.info "Destroying Ingredient #{resource.name}"
+          ::FileUtils.rm_rf resource.path
+        else
+          Whisk.ui.info "Ingredient #{resource.name} already destroyed"
+        end
+      end
+
       def git
         Grit::Git.new(resource.path)
       end
@@ -73,6 +115,32 @@ class Whisk
       def repo
         Grit::Repo.new(resource.path)
       end
+
+      def remote_changed?(remote, source)
+        if git.exist? and resource.source != repo.config["remote.#{remote}.url"]
+          Whisk.ui.info "Remote origin has changed for ingredient #{resource.name}"
+          true
+        else
+          false
+        end
+      end
+
+      def reset_origin
+        if remote_changed?("origin", new_source.source)
+          a = Whisk.ui.ask_question(
+            "Would you like to remove ingredient #{resource.name} before proceeding ?",
+            { :default => 'y' }
+          )
+          if a =~ /y/i
+            ::FileUtils.rm_rf resource.path
+            clone
+          else
+            Whisk.ui.warn "Aborting whisk"
+            exit 1
+          end
+        end
+      end
+
       def action_diff
         Whisk.ui.info "Diff for ingredient '#{resource.name}'"
         shell_out!("git diff", :cwd => resource.path)
@@ -81,6 +149,7 @@ class Whisk
       def action_prepare
         self.clone
         self.checkout
+        self.add_remotes
       end
 
       def action_status
