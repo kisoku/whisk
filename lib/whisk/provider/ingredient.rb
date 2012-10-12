@@ -42,7 +42,8 @@ class Whisk
             if a =~ /y/i
               run_command!("git remote rm #{remote}")
             else
-              Whisk.ui.
+              Whisk.ui.info("Skipping out of date remote #{remote}")
+              return
             end
           else
             Whisk.ui.info "Remote #{remote} already added"
