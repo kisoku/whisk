@@ -43,7 +43,7 @@ class Whisk
 
     def bowl(name, &block)
       b = Whisk::Resource::Bowl.new(name)
-      b.instance_eval(&block)
+      b.instance_eval(&block) if block_given?
       add_bowl(b)
     end
 
