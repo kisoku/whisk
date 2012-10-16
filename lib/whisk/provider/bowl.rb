@@ -49,7 +49,7 @@ class Whisk
       def ingredients_run(action)
         resource.ingredients.each do |name, ingredient|
           if ingredient.ref == :ref_from_environment
-            if environment.cookbook_versions.has_key? ingredient.name
+            if environment and environment.cookbook_versions.has_key? ingredient.name
               ingredient.ref environment.cookbook_versions[ingredient.name]
             else
               Whisk.ui.warn "Cookbook version for ingredient #{name} not found in environment #{resource.environment}"
