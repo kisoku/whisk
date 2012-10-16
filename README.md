@@ -1,6 +1,8 @@
 Whisk
 =====
 
+[![Build Status](https://secure.travis-ci.org/kisoku/whisk.png)](http://travis-ci.org/kisoku/whisk)
+
 Whisk is a simple cookbook manager for Chef, inspired by librarian and
 berkshelf.
 
