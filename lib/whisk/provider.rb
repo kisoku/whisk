@@ -25,5 +25,9 @@ class Whisk
     def initialize(resource)
       @resource = resource
     end
+
+    def action_nothing
+      nil
+    end
   end
 end
