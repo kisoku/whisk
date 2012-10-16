@@ -17,9 +17,16 @@
 #
 
 require 'rubygems'
+$:.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
+
+require 'simplecov'
+SimpleCov.start do
+  add_filter "/spec/"
+end
+
+require 'chef'
 require 'whisk/runner'
 require 'whisk/resource/bowl'
 
-$:.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 
 WHISKFILE_DIR = File.join(File.dirname(__FILE__), "data", "whiskfiles")

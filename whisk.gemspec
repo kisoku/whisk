@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency "mixlib-shellout", ">= 1.0.0"
   s.add_dependency "thor"
   s.add_development_dependency "rspec"
+  s.add_development_dependency "simplecov"
 end
 
 
