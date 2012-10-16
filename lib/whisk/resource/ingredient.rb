@@ -46,7 +46,7 @@ class Whisk
       end
 
       def ref(arg=nil)
-        set_or_return(:ref, arg, :kind_of => String)
+        set_or_return(:ref, arg, :kind_of => [String, Symbol])
       end
 
       def remote(rname, url)

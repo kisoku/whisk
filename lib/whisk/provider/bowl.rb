@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 
+require 'chef/json_compat'
 require 'whisk'
 require 'whisk/provider'
 require 'whisk/mixin/shellout'
@@ -26,12 +27,34 @@ class Whisk
 
       include Whisk::Mixin::ShellOut
 
+      def initialize(resource)
+        super
+        @environment = nil
+      end
+
+      def environment
+        if resource.environment
+          unless @environment.is_a? Chef::Environment
+            env_json = run_command!("knife environment show -F json #{resource.environment}").stdout
+            @environment = Chef::JSONCompat.from_json(env_json)
+          end
+        end
+        @environment
+      end
+
       def exist?
         ::Dir.exist? resource.path
       end
 
       def ingredients_run(action)
         resource.ingredients.each do |name, ingredient|
+          if ingredient.ref == :ref_from_environment
+            if environment.cookbook_versions.has_key? ingredient.name
+              ingredient.ref environment.cookbook_versions[ingredient.name]
+            else
+              Whisk.ui.warn "Cookbook version for ingredient #{name} not found in environment #{resource.environment}"
+            end
+          end
           ingredient.run_action(action)
         end
       end

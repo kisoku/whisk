@@ -26,7 +26,10 @@ end
 
 require 'chef'
 require 'whisk/runner'
+require 'whisk/resource'
 require 'whisk/resource/bowl'
+require 'whisk/provider'
+require 'whisk/provider/bowl'
 
 
 WHISKFILE_DIR = File.join(File.dirname(__FILE__), "data", "whiskfiles")
