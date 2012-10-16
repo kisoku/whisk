@@ -52,7 +52,7 @@ class Whisk
         set_or_return(:path, arg, :default => File.join(Dir.getwd, name))
       end
 
-      def refs_from_environment(arg=true)
+      def refs_from_environment(arg=nil)
         set_or_return(:refs_from_environment, arg, :kind_of => [TrueClass, FalseClass], :default => false)
       end
     end

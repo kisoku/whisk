@@ -33,7 +33,7 @@ describe Whisk::Provider::Bowl do
   before(:each) do
     @resource = Whisk::Resource::Bowl.new "testing" do
       environment "testing"
-      refs_from_environment
+      refs_from_environment true
       ingredient 'test_ingredient'
     end
 
