@@ -22,4 +22,10 @@ describe Whisk::WhiskFile do
   it "should raise when the Whiskfile does not exist" do
     expect { Whisk::WhiskFile.from_file "/whiskfile.nowhere" }.to raise_error
   end
+
+  it "should raise when bowls with identical names have been defined" do
+    @whiskfile = Whisk::WhiskFile.new
+    @whiskfile.bowl "fail"
+    expect { @whiskfile.bowl "fail" }.to raise_error
+  end
 end

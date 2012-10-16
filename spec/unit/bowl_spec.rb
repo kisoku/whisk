@@ -26,6 +26,11 @@ describe Whisk::Resource::Bowl do
   it "should default to a sensible path" do
     File.split(@bowl.path).last.should == @bowl.name
   end
+
+  it "should raise an error when duplicate ingredients are added" do
+    @bowl.ingredient "fail"
+    expect { @bowl.ingredient "fail" }.to raise_error
+  end
 end
 
 
