@@ -37,15 +37,9 @@ class Whisk
     end
 
     def provider(arg=nil)
-      klass = if arg.kind_of?(String) || arg.kind_of?(Symbol)
-                raise ArgumentError, "must provide provider by klass"
-                # lookup_provider_constant(arg)
-              else
-                arg
-              end
       set_or_return(
         :provider,
-        klass,
+        arg,
         :kind_of => [ Class ]
       )
     end
