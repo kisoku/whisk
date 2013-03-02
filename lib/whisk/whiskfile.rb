@@ -26,31 +26,33 @@ require 'whisk'
 
 class Whisk
   class WhiskFile
-    @@bowls = {}
+
+    attr_accessor :bowls
+
+    def initialize
+      @bowls = {}
+    end
+
+    def add_bowl(bowl)
+      if bowls.has_key? bowl.name
+        raise ArgumentError, "bowl #{bowl.name} already exists"
+      else
+        bowls[bowl.name] = bowl
+      end
+    end
+
+    def bowl(name, &block)
+      b = Whisk::Resource::Bowl.new(name)
+      b.instance_eval(&block) if block_given?
+      add_bowl(b)
+    end
 
     class << self
-      def add_bowl(bowl)
-        if @@bowls.has_key? name
-          raise ArgumentError, "bowl #{name} already exists"
-        else
-          @@bowls[bowl.name] = bowl
-        end
-      end
-
-      def bowl(name, &block)
-        b = Whisk::Resource::Bowl.new(name)
-        b.instance_eval(&block)
-        add_bowl(b)
-      end
-
-      def bowls
-        @@bowls
-      end
-
       def from_file(filename)
         if ::File.exists?(filename) && ::File.readable?(filename)
-          instance_eval(::IO.read(filename), filename, 1)
-          self
+          whiskfile = Whisk::WhiskFile.new
+          whiskfile.instance_eval(::IO.read(filename), filename, 1)
+          whiskfile
         else
           raise IOError, "Cannot open or read #{filename}!"
         end

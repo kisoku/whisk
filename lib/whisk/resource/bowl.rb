@@ -38,11 +38,22 @@ class Whisk
           raise ArgumentError, "Ingredient '#{iname}' has already been added to bowl '#{name}'"
         else
           ingredients[iname] = Whisk::Resource::Ingredient.new(iname, self, &block)
+          if refs_from_environment
+            ingredients[iname].ref :ref_from_environment
+          end
         end
+      end
+
+      def environment(arg=nil)
+        set_or_return(:environment, arg, :kind_of => String)
       end
 
       def path(arg=nil)
         set_or_return(:path, arg, :default => File.join(Dir.getwd, name))
+      end
+
+      def refs_from_environment(arg=nil)
+        set_or_return(:refs_from_environment, arg, :kind_of => [TrueClass, FalseClass], :default => false)
       end
     end
   end

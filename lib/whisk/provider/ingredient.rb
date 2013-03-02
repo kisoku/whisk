@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 
+require 'grit'
 require 'whisk/mixin/shellout'
 
 class Whisk
@@ -24,22 +25,33 @@ class Whisk
 
       include Whisk::Mixin::ShellOut
 
-      def clone
-        if ::File.exists? File.join(Dir.pwd, resource.name, ".git", "config")
-          Whisk.ui.info "Ingredient '#{resource.name}' already prepared"
-        else
-          Whisk.ui.info "Cloning ingredient '#{resource.name}', " + "from url #{resource.source}"
-          shell_out!("git clone #{resource.source} #{resource.name}")
+      def add_remotes
+        resource.remotes.each_pair do |remote, url|
+          add_remote(remote, url)
         end
       end
 
-      def current_ref
-        cref = run_command!("git rev-parse --abbrev-ref HEAD", :cwd => resource.name).stdout.chomp
-        if cref == 'HEAD'
-          return run_command!("git describe --tags", :cwd => resource.name).stdout.chomp
-        else
-          return cref
+      def add_remote(remote, url)
+        ::Dir.chdir resource.path
+        if repo.config.keys.include?("remote.#{remote}.url")
+          if remote_changed? remote
+            Whisk.ui.info "Remote #{remote} points to a different url"
+            a = Whisk.ui.ask_question("Would you like to change it to point to #{url} ?",
+                  {:default => 'y'}
+            )
+            if a =~ /y/i
+              run_command!("git remote rm #{remote}")
+            else
+              Whisk.ui.info("Skipping out of date remote #{remote}")
+              return
+            end
+          else
+            Whisk.ui.info "Remote #{remote} already added"
+            return
+          end
         end
+        Whisk.ui.info "Adding remote #{remote} to ingredient #{resource.name}"
+        run_command!("git remote add #{remote} #{url}")
       end
 
       def checkout
@@ -48,29 +60,123 @@ class Whisk
             Whisk.ui.info "Ingredient '#{resource.name}' already at ref '#{resource.ref}'"
           else
             Whisk.ui.info "Checking out ref '#{resource.ref}' for ingredient '#{resource.name}'"
-            shell_out!("git checkout #{resource.ref}", :cwd => resource.name)
+            cmd = run_command!("git checkout #{resource.ref}", :cwd => resource.path)
+            cmd.stdout.lines.each do |line|
+              Whisk.ui.info "\s\s#{line}"
+            end
+            cmd.stderr.lines.each do |line|
+              Whisk.ui.info "\s\s#{line}"
+            end
           end
         end
       end
 
+      def clone
+        if git.exist?
+          if remote_changed?("origin", resource.source)
+            reset_origin
+          else
+            Whisk.ui.info "Ingredient '#{resource.name}' already prepared"
+          end
+        else
+          Whisk.ui.info "Cloning ingredient '#{resource.name}', " + "from url #{resource.source}"
+          cmd = run_command!("git clone #{resource.source} #{resource.path}")
+          cmd.stdout.lines.each do |line|
+            Whisk.ui.info "\s\s#{line}"
+          end
+          cmd.stderr.lines.each do |line|
+            Whisk.ui.info "\s\s#{line}"
+          end
+        end
+      end
+
+      def current_ref
+        cref = run_command!("git rev-parse --abbrev-ref HEAD", :cwd => resource.path).stdout.chomp
+        if cref == 'HEAD'
+          return run_command!("git describe --tags", :cwd => resource.path).stdout.chomp
+        else
+          return cref
+        end
+      end
+
+      def destroy
+        if git.exist?
+          Whisk.ui.info "Destroying Ingredient #{resource.name}"
+          ::FileUtils.rm_rf resource.path
+        else
+          Whisk.ui.info "Ingredient #{resource.name} already destroyed"
+        end
+      end
+
+      def git
+        Grit::Git.new(resource.path)
+      end
+
+      def repo
+        Grit::Repo.new(resource.path)
+      end
+
+      def remote_changed?(remote, source)
+        if git.exist? and resource.source != repo.config["remote.#{remote}.url"]
+          Whisk.ui.info "Remote origin has changed for ingredient #{resource.name}"
+          true
+        else
+          false
+        end
+      end
+
+      def reset_origin
+        if remote_changed?("origin", new_source.source)
+          a = Whisk.ui.ask_question(
+            "Would you like to remove ingredient #{resource.name} before proceeding ?",
+            { :default => 'y' }
+          )
+          if a =~ /y/i
+            destroy
+            clone
+          else
+            Whisk.ui.warn "Aborting whisk"
+            exit 1
+          end
+        end
+      end
+
+      def action_destroy
+        destroy
+      end
+
       def action_diff
         Whisk.ui.info "Diff for ingredient '#{resource.name}'"
-        shell_out!("git diff", :cwd => resource.name)
+        shell_out!("git diff", :cwd => resource.path)
       end
 
       def action_prepare
         self.clone
         self.checkout
+        self.add_remotes
       end
 
       def action_status
         Whisk.ui.info "Status for ingredient '#{resource.name}'"
-        shell_out!("git status", :cwd => resource.name)
+        cmd = run_command!("git status", :cwd => resource.path)
+        cmd.stdout.lines.each do |line|
+          Whisk.ui.info "\s\s#{line}"
+        end
+        cmd.stderr.lines.each do |line|
+          Whisk.ui.info "\s\s#{line}"
+        end
+        Whisk.ui.info "\n"
       end
 
       def action_update
         Whisk.ui.info "Updating ingredient '#{resource.name}'"
-        shell_out!("git remote update", :cwd => resource.name)
+        cmd = run_command!("git remote update", :cwd => resource.path)
+        cmd.stdout.lines.each do |line|
+          Whisk.ui.info "\s\s#{line}"
+        end
+        cmd.stderr.lines.each do |line|
+          Whisk.ui.info "\s\s#{line}"
+        end
       end
     end
   end

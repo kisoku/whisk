@@ -1,0 +1,6 @@
+language: ruby
+gemfile:
+  - spec/support/Gemfile
+rvm:
+  - 1.9.3
+script: BUNDLE_GEMFILE=spec/support/Gemfile bundle exec rake spec

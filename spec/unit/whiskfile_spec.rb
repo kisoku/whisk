@@ -16,20 +16,16 @@
 # limitations under the License.
 #
 
-require 'rubygems'
-$:.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
+require File.expand_path(File.join(File.dirname(__FILE__), "..", "spec_helper"))
 
-require 'simplecov'
-SimpleCov.start do
-  add_filter "/spec/"
+describe Whisk::WhiskFile do
+  it "should raise when the Whiskfile does not exist" do
+    expect { Whisk::WhiskFile.from_file "/whiskfile.nowhere" }.to raise_error
+  end
+
+  it "should raise when bowls with identical names have been defined" do
+    @whiskfile = Whisk::WhiskFile.new
+    @whiskfile.bowl "fail"
+    expect { @whiskfile.bowl "fail" }.to raise_error
+  end
 end
-
-require 'chef'
-require 'whisk/runner'
-require 'whisk/resource'
-require 'whisk/resource/bowl'
-require 'whisk/provider'
-require 'whisk/provider/bowl'
-
-
-WHISKFILE_DIR = File.join(File.dirname(__FILE__), "data", "whiskfiles")

@@ -16,6 +16,7 @@
 # limitations under the License.
 #
 
+require 'chef/json_compat'
 require 'whisk'
 require 'whisk/provider'
 require 'whisk/mixin/shellout'
@@ -26,12 +27,34 @@ class Whisk
 
       include Whisk::Mixin::ShellOut
 
+      def initialize(resource)
+        super
+        @environment = nil
+      end
+
+      def environment
+        if resource.environment
+          unless @environment.is_a? Chef::Environment
+            env_json = run_command!("knife environment show -F json #{resource.environment}").stdout
+            @environment = Chef::JSONCompat.from_json(env_json)
+          end
+        end
+        @environment
+      end
+
       def exist?
         ::Dir.exist? resource.path
       end
 
       def ingredients_run(action)
         resource.ingredients.each do |name, ingredient|
+          if ingredient.ref == :ref_from_environment
+            if environment and environment.cookbook_versions.has_key? ingredient.name
+              ingredient.ref environment.cookbook_versions[ingredient.name]
+            else
+              Whisk.ui.warn "Cookbook version for ingredient #{name} not found in environment #{resource.environment}"
+            end
+          end
           ingredient.run_action(action)
         end
       end
@@ -47,6 +70,16 @@ class Whisk
         unless self.exist?
           Whisk.ui.info "Creating bowl '#{resource.name}' with path #{resource.path}"
           ::FileUtils.mkdir_p resource.path
+        end
+      end
+
+      def action_destroy
+        if self.exist?
+          ingredients_run("destroy")
+          if Dir.entries(resource.path) == ["..", "."]
+            Whisk.ui.info("Destroying empty bowl #{resource.name}")
+            Dir.unlink(resource.path)
+          end
         end
       end
 
@@ -90,7 +123,8 @@ class Whisk
       def action_upload
         if self.exist?
           Whisk.ui.info "Uploading ingredients in bowl '#{resource.name}'"
-          shell_out!("knife cookbook upload --all", :env => knife_env)
+          cookbooks = resource.ingredients.to_a.map {|name, cb| name}
+          shell_out!("knife cookbook upload #{cookbooks.join(' ')}", :env => knife_env)
         end
       end
     end

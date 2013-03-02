@@ -24,7 +24,6 @@ class Whisk
   class CLI < Thor
     def initialize(*)
       super
-      # JW TODO: Replace Chef::Knife::UI with our own UI class
       ::Whisk.ui = Chef::Knife::UI.new(STDOUT, STDERR, STDIN, {})
       @options = options.dup # unfreeze frozen options Hash from Thor
     rescue Error => e
@@ -34,77 +33,53 @@ class Whisk
 
     namespace "whisk"
 
-    method_option :whiskfile,
+    class_option :whiskfile,
       type: :string,
       default: File.join(Dir.pwd, Whisk::DEFAULT_FILENAME),
       desc: "Path to a Whiskfile to operate off of.",
       aliases: "-w",
       banner: "PATH"
+
+    desc "destroy", "destroy your bowls"
+    def destroy(filter=nil)
+      runner = Whisk::Runner.new(options[:whiskfile], filter)
+      runner.run('destroy')
+    end
+
     desc "diff", "run git diff in your bowls"
     def diff(filter=nil)
       runner = Whisk::Runner.new(options[:whiskfile], filter)
       runner.run('diff')
     end
 
-    method_option :whiskfile,
-      type: :string,
-      default: File.join(Dir.pwd, Whisk::DEFAULT_FILENAME),
-      desc: "Path to a Whiskfile to operate off of.",
-      aliases: "-w",
-      banner: "PATH"
     desc "list", "list the configured bowls and ingredients"
     def list(filter=nil)
       runner = Whisk::Runner.new(options[:whiskfile], filter)
       runner.run('list')
     end
 
-    method_option :whiskfile,
-      type: :string,
-      default: File.join(Dir.pwd, Whisk::DEFAULT_FILENAME),
-      desc: "Path to a Whiskfile to operate off of.",
-      aliases: "-w",
-      banner: "PATH"
     desc "prepare", "prepare a bowl by cloning any missing repositories"
     def prepare(filter=nil)
       runner = Whisk::Runner.new(options[:whiskfile], filter)
       runner.run('prepare')
     end
 
-    method_option :whiskfile,
-      type: :string,
-      default: File.join(Dir.pwd, Whisk::DEFAULT_FILENAME),
-      desc: "Path to a Whiskfile to operate off of.",
-      aliases: "-w",
-      banner: "PATH"
     desc "status", "run git status in your bowls"
     def status(filter=nil)
       runner = Whisk::Runner.new(options[:whiskfile], filter)
       runner.run('status')
     end
 
-    method_option :whiskfile,
-      type: :string,
-      default: File.join(Dir.pwd, Whisk::DEFAULT_FILENAME),
-      desc: "Path to a Whiskfile to operate off of.",
-      aliases: "-w",
-      banner: "PATH"
     desc "update", "run git remote update in your bowls"
     def update(filter=nil)
       runner = Whisk::Runner.new(options[:whiskfile], filter)
       runner.run('update')
     end
 
-    method_option :whiskfile,
-      type: :string,
-      default: File.join(Dir.pwd, Whisk::DEFAULT_FILENAME),
-      desc: "Path to a Whiskfile to operate off of.",
-      aliases: "-w",
-      banner: "PATH"
     desc "upload", "upload the specified bowls to a chef server"
     def upload(filter=nil)
       runner = Whisk::Runner.new(options[:whiskfile], filter)
       runner.run('upload')
     end
-
   end
 end

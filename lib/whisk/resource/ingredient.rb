@@ -25,15 +25,20 @@ class Whisk
 
       include Chef::Mixin::ParamsValidate
 
-      attr_accessor :bowl
+      attr_accessor :bowl, :remotes
 
       def initialize(name, bowl, &block)
         @bowl = bowl
         @provider = Whisk::Provider::Ingredient
         @ref = nil
+        @remotes = {}
         @source = nil
 
         super(name, &block)
+      end
+
+      def path
+        File.join(self.bowl.path, self.name)
       end
 
       def source(arg=nil)
@@ -41,7 +46,15 @@ class Whisk
       end
 
       def ref(arg=nil)
-        set_or_return(:ref, arg, :kind_of => String)
+        set_or_return(:ref, arg, :kind_of => [String, Symbol])
+      end
+
+      def remote(rname, url)
+        if remotes.has_key?(name)
+          raise ArgumentError, "remote #{rname} already defined for ingredient #{name}"
+        else
+          remotes[rname] = url
+        end
       end
     end
   end

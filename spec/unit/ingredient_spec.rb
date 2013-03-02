@@ -16,20 +16,18 @@
 # limitations under the License.
 #
 
-require 'rubygems'
-$:.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
+require File.expand_path(File.join(File.dirname(__FILE__), "..", "spec_helper"))
 
-require 'simplecov'
-SimpleCov.start do
-  add_filter "/spec/"
+describe Whisk::Resource::Bowl do
+  before(:each) do
+    @bowl = Whisk::Resource::Bowl.new "test_bowl"
+    @ingredient = Whisk::Resource::Ingredient.new("test_ingredient", @bowl)
+    @provider = Whisk::Provider::Ingredient.new(@ingredient)
+    @environment = Chef::Environment.new
+    @environment.cookbook_versions['test_ingredient'] = '0.0.1'
+  end
+
+  it "should default to a sensible path" do
+    @ingredient.path.should == File.join(@ingredient.bowl.path, @ingredient.name)
+  end
 end
-
-require 'chef'
-require 'whisk/runner'
-require 'whisk/resource'
-require 'whisk/resource/bowl'
-require 'whisk/provider'
-require 'whisk/provider/bowl'
-
-
-WHISKFILE_DIR = File.join(File.dirname(__FILE__), "data", "whiskfiles")

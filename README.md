@@ -1,6 +1,8 @@
 Whisk
 =====
 
+[![Build Status](https://secure.travis-ci.org/kisoku/whisk.png)](http://travis-ci.org/kisoku/whisk)
+
 Whisk is a simple cookbook manager for Chef, inspired by librarian and
 berkshelf.
 
@@ -47,6 +49,17 @@ Whisk requires that the following code be added to your knife.rb
     cookbook_path ENV['WHISK_COOKBOOK_PATH']
 
 # Commands #
+
+## whisk destroy ##
+
+Whisk destroys deletes the specified bowls or cookbooks from your filesystem.
+Use with care.
+
+## whisk diff ##
+
+Whisk diff simply runs 'git diff' in each of the ingredients specified. It
+currently has no support for running diff with anything other than the default
+arguments
 
 ##  whisk list ##
 
