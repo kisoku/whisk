@@ -49,7 +49,12 @@ class Whisk
       end
 
       def path(arg=nil)
-        set_or_return(:path, arg, :default => File.join(Dir.getwd, name))
+        if arg
+          path = File.expand_path(arg)
+        else
+          path = nil
+        end
+        set_or_return(:path, path, :default => File.expand_path(File.join(Dir.getwd, name)))
       end
 
       def refs_from_environment(arg=nil)
