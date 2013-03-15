@@ -23,7 +23,7 @@ end
 
 desc "Clean up build gems"
 task :clean do
-  system "rm #{GEM_NAME}-#{GEM_VERSION}.gem"
+  system "rm -f #{GEM_NAME}-*.gem"
 end
 
 desc "Run rspec tests"
